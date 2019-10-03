@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    {% block title %}<title>Timeplan - sivert.pw</title>{% endblock %}
+    <style>
+body {
+    background-color: #333;
+    color: #AFBB44;
+}
+h1 {
+    margin-top: 50px;
+    margin-left: 60px;
+}
+select { margin-left: 60px; }
+#timeplan {
+    display: grid;
+    grid-template-columns: 8 8 8 8 8;
+    background-color: #6F446F;
+    padding: 10px;
+    margin: 69px;
+}
+.
+.time {
+    background-color: #446F44;
+    border: 1px solid #333;
+    padding: 20px;
+    font-size: 14px;
+    text-align: center;
+}
+    </style>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+</head>
+<body>
+    <h1 id="title">Timeplan</h1>
+    <div id="timeplan">
+        <div class="dag">Dag</div>
+        <div class="time">1.</div>
+        <div class="time">2.</div>
+        <div class="time">3.</div>
+        <div class="time">4.</div>
+        <div class="time">5.</div>
+        <div class="time">6.</div>
+        <div class="time">7.</div>
+        <div class="time">8.</div>
+        {# <div class="time">08:00 - 08:45</div>
+        <div class="time">08:50 - 09:35</div>
+        <div class="time">09:45 - 10:30</div>
+        <div class="time">10:35 - 11:20</div>
+        <div class="time">12:15 - 13:00</div>
+        <div class="time">13:05 - 13:50</div>
+        <div class="time">14:00 - 14:45</div>
+        <div class="time">14:50 - 15:35</div> #}
+    </div>
+    <select id="hvilken-timeplan">
+    </select>
+    <script>
+for (var i = 0; i < 8*5; i++) {
+    $("#timeplan").append('<div class="time"></div>');
+}
+$.ajax({
+    url: '/api/timeplaner',
+    success: funcion(result, status) {
+        $("hvilken-timeplan").html("");
+        $.each(result, function(k, v) {
+            $("hvilken-timeplan").append('<option value="'+v+'">'+k+'</option>');
+        });
+    }
+});
+$(#oppdater-timeplan button).on("click", function(event) {
+    $.ajax({
+        url: '/api/timeplan',
+        data: {
+            timeplan: $('#hvilken-timeplan').val()
+        },
+        dataType: 'json',
+        success: function(result, status) {
+            $("#timeplan").html(`
+        <div class="dag">Dag</div>
+        <div class="time">1.</div>
+        <div class="time">2.</div>
+        <div class="time">3.</div>
+        <div class="time">4.</div>
+        <div class="time">5.</div>
+        <div class="time">6.</div>
+        <div class="time">7.</div>
+        <div class="time">8.</div>
+            `);
+            if (status == "200") {
+                $("#title").html("Timeplan "+result.name);
+                $("#timeplan").append("<div>Mandag</div><div></div><div></div><div></div><div></div>")
+                $.each(result.Mandag, function(k, v) {
+                    $("#timeplan").append(`
+        <div class="time">`+v.fag+`<br>`+v.tid+`<div>
+                    `);
+                $("#timeplan").append("<div>Tirsdag</div>")
+                $.each(result.Tirsdag, function(k, v) {
+                    $("timeplan").append(`
+        <div class="time">`+v.fag+`<br>`+v.tid+`<div>
+                    `);
+                $("#timeplan").append("<div>Onsdag</div>")
+                $.each(result.Onsdag, function(k, v) {
+                    $("timeplan").append(`
+        <div class="time">`+v.fag+`<br>`+v.tid+`<div>
+                    `);
+                $("#timeplan").append("<div>Torsdag</div>")
+                $.each(result.Torsdag, function(k, v) {
+                    $("timeplan").append(`
+        <div class="time">`+v.fag+`<br>`+v.tid+`<div>
+                    `);
+                $("#timeplan").append("<div>Fredag</div>")
+                $.each(result.Fredag, function(k, v) {
+                    $("timeplan").append(`
+        <div class="time">`+v.fag+`<br>`+v.tid+`<div>
+                    `);
+                });
+            }
+            else
+                $("timeplan").html('Error: '+status)
+        }
+    });
+});
+    </script>
+</body>
+</html>
